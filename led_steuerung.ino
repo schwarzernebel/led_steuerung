@@ -109,7 +109,7 @@ void setup()
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
       case (BUT03) :                        //Ausschalten, Zustand speichern
-        ledlastR1 = analogRead(ledR1);
+        ledlastR1 = analogRead(ledR1);                                //die gelesenen/gespeicherten Werte scheinen willkürlich zu sein
         ledlastG1 = analogRead(ledG1);
         ledlastB1 = analogRead(ledB1);
         //    ledlastG2 = analogRead(ledG2);
@@ -124,7 +124,7 @@ void setup()
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
       case (BUT04) :                         //Einschalten, Zustand laden
-        analogWrite(ledR1, ledlastR1);
+        analogWrite(ledR1, ledlastR1);                              //die geladenen Werte entsprechen nicht den gespeicherten 
         analogWrite(ledG1, ledlastG1);
         analogWrite(ledB1, ledlastB1);
         analogWrite(ledR2, ledlastR1);
@@ -132,122 +132,122 @@ void setup()
         analogWrite(ledB2, ledlastB1);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT05) :                          //Rote Farbe erhöhen
+      case (BUT05) :                          //Rote Farbe erhöhen (funktioniert so nicht, Helligkeit ändert sich ich beide Richtungen)
         ledstatusR1++;
         analogWrite(ledR1, ledstatusR1);
 
 
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT06) :                          //Grüne Farbe erhöhen
+      case (BUT06) :                          //Grüne Farbe erhöhen (funktioniert so auch nicht)
         ledstatusG1 = ledstatusG1 + 10;
         analogWrite(ledG1, ledstatusG1);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT07) :                          //Blaue Farbe erhöhen
+      case (BUT07) :                          //Blaue Farbe erhöhen (dann... erst noch test)
         analogWrite(ledR1, 0);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT08) :                          //Weiß max
+      case (BUT08) :                          //Weiß max (noch test)
         analogWrite(ledR1, 2);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ////////////////////////////////////////////////////////////////////
-      case (BUT09) :                          //Rot verringern
+      case (BUT09) :                          //Rot verringern (noch test)
         analogWrite(ledR1, 3);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT10) :                          //Grün verringern
+      case (BUT10) :                          //Grün verringern (noch test)
         analogWrite(ledR1, 4);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT11) :                           //Blau verringern
+      case (BUT11) :                           //Blau verringern (noch test)
         analogWrite(ledR1, 6);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT12) :                           //
+      case (BUT12) :                           // (noch test)
         analogWrite(ledR1, 8);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT13) :                          //Chilliges Orange
+      case (BUT13) :                          //Chilliges Orange (noch test)
         analogWrite(ledR1, 11);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT14) :                           //
+      case (BUT14) :                           //(noch test)
         analogWrite(ledR1, 16);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT15) :
+      case (BUT15) :                          //(noch test)
         analogWrite(ledR1, 23);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT16) :
+      case (BUT16) :                          //(noch test)
         analogWrite(ledR1, 32);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT17) :
+      case (BUT17) :                          //(noch test)
         analogWrite(ledR1, 45);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT18) :
+      case (BUT18) :                          //(noch test)
         analogWrite(ledR1, 64);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT19) :
+      case (BUT19) :                          //(noch test)
         analogWrite(ledR1, 90);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT20) :
+      case (BUT20) :                          //(noch test)
         analogWrite(ledR1, 128);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT21) :
+      case (BUT21) :                          //(noch test)
         analogWrite(ledR1, 181);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT22) :
+      case (BUT22) :                          //(noch test)
         analogWrite(ledR1, 255);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT23) :
+      case (BUT23) :                          //(noch test)
         analogWrite(ledR1, 128);
         analogWrite(ledG1, 0);
         analogWrite(ledB1, 0);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
       case (BUT24) :
-        //Farbwechsel smooth langsam
+        //Farbwechsel smooth langsam (funtioniert so, wenn einzeln hochgeladen, in case nicht)
         byte r, g, b;
         FADESP = 10;
         {
@@ -256,7 +256,7 @@ void setup()
             analogWrite(ledR1, r);
             analogWrite(ledR2, r);
             delay(FADESP);
-          }
+          }                                           //ab hier bricht es ab und startet den ersten fade erneut
           // fade from violet to red
           for (b = 255; b > 0; b--) {
             analogWrite(ledB1, b);
