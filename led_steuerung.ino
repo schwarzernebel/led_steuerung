@@ -2,26 +2,34 @@
 #define RECV_PIN 13
 IRrecv irrecv(RECV_PIN);
 decode_results results;
-#define ledR1 3                                    //Definiere rote led vom ersten Streifen
-#define ledG1 5                                    //Definiere grüne  - '' -
-#define ledB1 6                                     //Definiere blaue  - '' -
-#define ledR2 9                                     //Definiere rote led vom zweiten Streifen
-#define ledG2 10                                     //Definiere grüne  - '' -
-#define ledB2 11                                    //Definiere blaue  - '' -
+#define ledR1 5                                    //Definiere rote led vom ersten Streifen
+#define ledG1 6                                    //Definiere grüne  - '' -
+#define ledB1 3                                     //Definiere blaue  - '' -
+#define ledR2 10                                     //Definiere rote led vom zweiten Streifen
+#define ledG2 11                                     //Definiere grüne  - '' -
+#define ledB2 9                                     //Definiere blaue  - '' -
 
 byte ledstatusR1 = 0;                               //Definiere den Status von R1 (an/aus)
 byte ledstatusG1 = 0;                               //Definiere den Status von G1 (an/aus)
 byte ledstatusB1 = 0;                               //Definiere den Status von B1 (an/aus)
-//byte ledstatusR2 = 0;                               //Definiere den Status von R2 (an/aus)
-//byte ledstatusG2 = 0;                               //Definiere den Status von G2 (an/aus)
-//byte ledstatusB2 = 0;                               //Definiere den Status von B2 (an/aus)
-byte ledlastR1;
-//byte ledlastR2;
-byte ledlastG1;
-//byte ledlastG2;
-byte ledlastB1;
-//byte ledlastB2;
-byte FADESP;
+
+byte lastR;                                         //speichert den letzen Zustand von rot
+byte lastG;                                         //speichert den letzen Zustand von grün
+byte lastB;                                         //speichert den letzen Zustand von blau
+
+byte memR1;                                         //Speicherplatz 1
+byte memG1;
+byte memB1;
+
+byte memR2;                                         //Speicherplatz 2
+byte memG2;
+byte memB2;
+
+byte memR3;                                         //Speicherplatz 3
+byte memG3;
+byte memB3;
+
+byte FADESP = 10;                                        //Dimmgeschwindigkeit, je höher desto langsamer
 
 
 #define BUT01 16187647
@@ -50,10 +58,58 @@ byte FADESP;
 #define BUT24 16246807
 
 
+void rainbow () //farbwechsel, keine endlosschleife?
+{
+  byte r, g, b;
 
+  // fade from blue to violet
+  for (byte r = 0; r < 255; r++) {
+    analogWrite(ledR1, r);
+    analogWrite(ledR2, r);
+    delay(FADESP);
+  }
+  // fade from violet to red
+  for (b = 255; b > 0; b--) {
+    analogWrite(ledB1, b);
+    analogWrite(ledB2, b);
+    delay(FADESP);
+  }
+  // fade from red to yellow
+  for (g = 0; g < 255; g++) {
+    analogWrite(ledG1, g);
+    analogWrite(ledG2, g);
+    delay(FADESP);
+  }
+  // fade from yellow to green
+  for (r = 255; r > 0; r--) {
+    analogWrite(ledR1, r);
+    analogWrite(ledR2, r);
+    delay(FADESP);
+  }
+  // fade from green to teal
+  for (b = 0; b < 255; b++) {
+    analogWrite(ledB1, b);
+    analogWrite(ledB2, b);
+    delay(FADESP);
+  }
+  // fade from teal to blue
+  for (g = 255; g > 0; g--) {
+    analogWrite(ledG1, g);
+    analogWrite(ledG2, g);
+    delay(FADESP);
 
+  }// return;
+}
 
-
+void writeall ()
+{
+  analogWrite(ledR1, ledstatusR1);
+  analogWrite(ledG1, ledstatusG1);
+  analogWrite(ledB1, ledstatusB1);
+  analogWrite(ledR2, ledstatusR1);
+  analogWrite(ledG2, ledstatusG1);
+  analogWrite(ledB2, ledstatusB1);
+}
 
 
 void setup()
@@ -67,238 +123,159 @@ void setup()
   pinMode (ledB2, OUTPUT);
   irrecv.enableIRIn();                              //Start IrReciver
 
-} void loop() {
-  ledstatusR1 = analogRead(ledR1);                      //aktuelle Einstellung lesen und speichern
-  // ledstatusR2 = analogRead(ledR2);
-  ledstatusG1 = analogRead(ledG1);
-  // ledstatusG2 = analogRead(ledG2);
-  ledstatusB1 = analogRead(ledB1);
-  // ledstatusB2 = analogRead(ledB2);
-
-  if (irrecv.decode(&results)) {
+}
+void loop()
+{
+  while (irrecv.decode(&results)) {
     Serial.println(results.value, DEC);
     switch (results.value) {
       case (BUT01) :                     //Gesamte Helligkeit erhöhen
-        ledstatusR1++;
-        analogWrite(ledR1, ledstatusR1);
-        //  ledstatusR2++;
-        analogWrite(ledR2, ledstatusR1);
-        ledstatusG1++;
-        analogWrite(ledG1, ledstatusG1);
-        //  ledstatusG2++;
-        analogWrite(ledG2, ledstatusG1);
-        ledstatusB1++;
-        analogWrite(ledB1, ledstatusB1);
-        //  ledstatusB2++;
-        analogWrite(ledB2, ledstatusB1);
+
+        ledstatusR1 = ledstatusR1 + 5;
+        ledstatusG1 = ledstatusG1 + 5;
+        ledstatusB1 = ledstatusB1 + 5;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
       case (BUT02) :                     //Gesamte Helligkeit verringern
         ledstatusR1--;
-        analogWrite(ledR1, ledstatusR1);
-        //   ledstatusR2--;
-        analogWrite(ledR2, ledstatusR1);
         ledstatusG1--;
-        analogWrite(ledG1, ledstatusG1);
-        //   ledstatusG2--;
-        analogWrite(ledG2, ledstatusG1);
         ledstatusB1--;
-        analogWrite(ledB1, ledstatusB1);
-        //   ledstatusB2--;
-        analogWrite(ledB2, ledstatusB1);
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT03) :                        //Ausschalten, Zustand speichern
-        ledlastR1 = analogRead(ledR1);                                //die gelesenen/gespeicherten Werte scheinen willkürlich zu sein
-        ledlastG1 = analogRead(ledG1);
-        ledlastB1 = analogRead(ledB1);
-        //    ledlastG2 = analogRead(ledG2);
-        //    ledlastB1 = analogRead(ledB1);
-        //    ledlastB2 = analogRead(ledB2);
-        analogWrite(ledR1, 0);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
-        analogWrite(ledR2, 0);
-        analogWrite(ledG2, 0);
-        analogWrite(ledB2, 0);
+      case (BUT03) :                        //Speichern, ausschalten
+        lastR = ledstatusR1;
+        lastG = ledstatusG1;
+        lastB = ledstatusB1;
+        delay(1);
+        ledstatusR1 = 0;
+        ledstatusG1 = 0;
+        ledstatusB1 = 0;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT04) :                         //Einschalten, Zustand laden
-        analogWrite(ledR1, ledlastR1);                              //die geladenen Werte entsprechen nicht den gespeicherten 
-        analogWrite(ledG1, ledlastG1);
-        analogWrite(ledB1, ledlastB1);
-        analogWrite(ledR2, ledlastR1);
-        analogWrite(ledG2, ledlastG1);
-        analogWrite(ledB2, ledlastB1);
+      case (BUT04) :                         //Laden, einschalten
+        ledstatusR1 = lastR;
+        ledstatusG1 = lastG;
+        ledstatusB1 = lastB;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT05) :                          //Rote Farbe erhöhen (funktioniert so nicht, Helligkeit ändert sich ich beide Richtungen)
-        ledstatusR1++;
-        analogWrite(ledR1, ledstatusR1);
-
-
+      case (BUT05) :                          //Rote Farbe erhöhen
+        ledstatusR1 = ledstatusR1 + 5;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT06) :                          //Grüne Farbe erhöhen (funktioniert so auch nicht)
-        ledstatusG1 = ledstatusG1 + 10;
-        analogWrite(ledG1, ledstatusG1);
+      case (BUT06) :                          //Grüne Farbe erhöhen
+        ledstatusG1 = ledstatusG1 + 5;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT07) :                          //Blaue Farbe erhöhen (dann... erst noch test)
-        analogWrite(ledR1, 0);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT07) :                          //Blaue Farbe erhöhen
+        ledstatusB1 = ledstatusB1 + 5;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT08) :                          //Weiß max (noch test)
-        analogWrite(ledR1, 2);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT08) :                          //warmes weiß
+        ledstatusR1 = 255;
+        ledstatusG1 = 255;
+        ledstatusB1 = 230;
         delay(1); break;
       ////////////////////////////////////////////////////////////////////
-      case (BUT09) :                          //Rot verringern (noch test)
-        analogWrite(ledR1, 3);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT09) :                          //Rot verringern
+        ledstatusR1--;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT10) :                          //Grün verringern (noch test)
-        analogWrite(ledR1, 4);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT10) :                          //Grün verringern
+        ledstatusG1--;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT11) :                           //Blau verringern (noch test)
-        analogWrite(ledR1, 6);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT11) :                           //Blau verringern
+        ledstatusB1--;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT12) :                           // (noch test)
-        analogWrite(ledR1, 8);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT12) :                           // abwechselnd blinken, keine endlosschleife?
+        ledstatusR1 = 255;
+        ledstatusG1 = 0;
+        ledstatusB1 = 0;
+        writeall();
+        delay(500);
+        ledstatusR1 = 0;
+        ledstatusG1 = 255;
+        ledstatusB1 = 0;
+        writeall();
+        delay(500);
+        ledstatusR1 = 0;
+        ledstatusG1 = 0;
+        ledstatusB1 = 255;
+        writeall();
+        delay(500);
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT13) :                          //Chilliges Orange (noch test)
-        analogWrite(ledR1, 11);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT13) :                          //Chilliges Orange
+        ledstatusR1 = 255;
+        ledstatusG1 = 120;
+        ledstatusB1 = 0;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT14) :                           //(noch test)
-        analogWrite(ledR1, 16);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT14) :                           ///frei
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT15) :                          //(noch test)
-        analogWrite(ledR1, 23);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT15) :                          ///frei
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT16) :                          //(noch test)
-        analogWrite(ledR1, 32);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT16) :                          //frei
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT17) :                          //(noch test)
-        analogWrite(ledR1, 45);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT17) :                          //Speicherplatz 1
+        memR1 = ledstatusR1;
+        memG1 = ledstatusG1;
+        memB1 = ledstatusB1;
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT18) :                          //(noch test)
-        analogWrite(ledR1, 64);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT18) :                          //Speicherplatz 2
+        memR2 = ledstatusR1;
+        memG2 = ledstatusG1;
+        memB2 = ledstatusB1;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT19) :                          //(noch test)
-        analogWrite(ledR1, 90);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT19) :                          //Speicherplatz 3
+        memR3 = ledstatusR1;
+        memG3 = ledstatusG1;
+        memB3 = ledstatusB1;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT20) :                          //(noch test)
-        analogWrite(ledR1, 128);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT20) :                          //frei
+
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT21) :                          //(noch test)
-        analogWrite(ledR1, 181);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT21) :                          // 1 laden
+        ledstatusR1 = memR1;
+        ledstatusG1 = memG1;
+        ledstatusB1 = memB1;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT22) :                          //(noch test)
-        analogWrite(ledR1, 255);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT22) :                          // 2 laden
+        ledstatusR1 = memR2;
+        ledstatusG1 = memG2;
+        ledstatusB1 = memB2;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT23) :                          //(noch test)
-        analogWrite(ledR1, 128);
-        analogWrite(ledG1, 0);
-        analogWrite(ledB1, 0);
+      case (BUT23) :                          // 3 laden
+        ledstatusR1 = memR3;
+        ledstatusG1 = memG3;
+        ledstatusB1 = memB3;
         delay(1); break;
       ///////////////////////////////////////////////////////////////////
-      case (BUT24) :
-        //Farbwechsel smooth langsam (funtioniert so, wenn einzeln hochgeladen, in case nicht)
-        byte r, g, b;
-        FADESP = 10;
-        {
-          // fade from blue to violet
-          for (r = 0; r < 256; r++) {
-            analogWrite(ledR1, r);
-            analogWrite(ledR2, r);
-            delay(FADESP);
-          }                                           //ab hier bricht es ab und startet den ersten fade erneut
-          // fade from violet to red
-          for (b = 255; b > 0; b--) {
-            analogWrite(ledB1, b);
-            analogWrite(ledB2, b);
-            delay(FADESP);
-          }
-          // fade from red to yellow
-          for (g = 0; g < 256; g++) {
-            analogWrite(ledG1, g);
-            analogWrite(ledG2, g);
-            delay(FADESP);
-          }
-          // fade from yellow to green
-          for (r = 255; r > 0; r--) {
-            analogWrite(ledR1, r);
-            analogWrite(ledR2, r);
-            delay(FADESP);
-          }
-          // fade from green to teal
-          for (b = 0; b < 256; b++) {
-            analogWrite(ledB1, b);
-            analogWrite(ledB2, b);
-            delay(FADESP);
-          }
-          // fade from teal to blue
-          for (g = 255; g > 0; g--) {
-            analogWrite(ledG1, g);
-            analogWrite(ledG2, g);
-            delay(FADESP);
-          }
-        }
+      case (BUT24) :                          //Farbwechsel smooth, keine endlosschleife?
+        rainbow();
       delay(1); break; default: delay(1);
     }
 
+    writeall();
     irrecv.resume();
     Serial.println(ledstatusR1);
     Serial.println(ledstatusG1);
     Serial.println(ledstatusB1);
-    Serial.println(ledlastR1);
-    Serial.println(ledlastG1);
-    Serial.println(ledlastB1);
-
   }
 
 
